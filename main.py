@@ -21,7 +21,11 @@ def get_urls() -> [str]:
         return urls_file.readlines()
 
 
-if __name__ == "__main__":
+def main():
     attractions = parse_locations(get_urls())
     for attraction in attractions:
         export_attraction(attraction)
+
+
+if __name__ == "__main__":
+    main()
