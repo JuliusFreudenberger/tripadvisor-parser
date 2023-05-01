@@ -1,19 +1,13 @@
+from concurrent.futures import ThreadPoolExecutor
+
 from csv_exporter import export_attraction
-from tripadvisor_attraction import TripadvisorAttraction
 from tripadvisor_parser import TripadvisorAttractionParser
 
 
-def parse_locations(urls: [str]) -> [TripadvisorAttraction]:
-    attractions = []
-    for url in urls:
-        attractions.append(parse_location(url))
-
-    return attractions
-
-
-def parse_location(url: str) -> TripadvisorAttraction:
+def parse_and_export_attraction(url: str):
     parser = TripadvisorAttractionParser(url.strip())
-    return parser.parse()
+    attraction = parser.parse()
+    export_attraction(attraction)
 
 
 def get_urls() -> [str]:
@@ -22,9 +16,8 @@ def get_urls() -> [str]:
 
 
 def main():
-    attractions = parse_locations(get_urls())
-    for attraction in attractions:
-        export_attraction(attraction)
+    with ThreadPoolExecutor() as executor:
+        executor.map(parse_and_export_attraction, get_urls())
 
 
 if __name__ == "__main__":
