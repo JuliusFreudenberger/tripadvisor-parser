@@ -1,6 +1,9 @@
+import os.path
+
 from tripadvisor_attraction import TripadvisorAttraction, TripadvisorReview
 
 TABLE_HEADING = "username^review_title^review_text^posting_date^count_stars^count_likes^translated_by"
+EXPORT_DIRECTORY = 'export'
 
 
 def export_attraction(attraction: TripadvisorAttraction):
@@ -8,7 +11,9 @@ def export_attraction(attraction: TripadvisorAttraction):
     for review in attraction.reviews:
         export_string += line_for_review(review) + '\n'
 
-    with open(f'export/{attraction.title} ({attraction.count_of_reviews}).csv', 'w') as export_file:
+    if not os.path.isdir(EXPORT_DIRECTORY):
+        os.makedirs(EXPORT_DIRECTORY)
+    with open(f'{EXPORT_DIRECTORY}/{attraction.title} ({attraction.count_of_reviews}).csv', 'w') as export_file:
         export_file.writelines(export_string)
 
 
